@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using E_Commerce_Api.Data;
 using E_Commerce_Api.Data.Entities;
 using E_Commerce_Api.Models.UserModel;
+using Newtonsoft.Json;
 
 namespace E_Commerce_Api.Controllers
 {
@@ -83,29 +84,34 @@ namespace E_Commerce_Api.Controllers
         public async Task<ActionResult<UserModel>> PostUserModel(CreateUserModel model)
         {
             var _user = await _context.Users.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-            if (_user == null)
+           
+            if (_user == null )
             {
-                var user = new UserModel
+                if(IsValidEmail(model.Email))
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Email = model.Email,
-                    PasswordHash = new PasswordHashModel
+                    var user = new UserModel
                     {
-                        Password = model.password
-                    },
-                    Adress = new AddressModel
-                    {
-                        AddressLine = model.AddressLine,
-                        ZipCode = model.ZipCode,
-                        City = model.City
-                    }
-                };
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.Email,
+                        PasswordHash = new PasswordHashModel
+                        {
+                            Password = model.password
+                        },
+                        Adress = new AddressModel
+                        {
+                            AddressLine = model.AddressLine,
+                            ZipCode = model.ZipCode,
+                            City = model.City
+                        }
+                    };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                    _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetUserModel", new { id = user.Id }, user);
+                    return CreatedAtAction("GetUserModel", new { id = user.Id }, user);
+                }
+                return new BadRequestObjectResult(JsonConvert.SerializeObject(new { message = "Please enter a valid Email" }));
             }
 
             else 
@@ -139,6 +145,23 @@ namespace E_Commerce_Api.Controllers
         private bool UserModelExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        bool IsValidEmail(string email)
+        {
+            if (email.Trim().EndsWith("."))
+            {
+                return false; 
+            }
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
