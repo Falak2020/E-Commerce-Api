@@ -9,6 +9,7 @@ using E_Commerce_Api.Data;
 using E_Commerce_Api.Data.Entities;
 using E_Commerce_Api.Models.UserModel;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace E_Commerce_Api.Controllers
 {
@@ -23,12 +24,38 @@ namespace E_Commerce_Api.Controllers
             _context = context;
         }
 
+
+
+
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<GetUserModel>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = new List<GetUserModel>();
+
+            foreach (var user in await _context.Users.Include(x => x.Adress).ToListAsync())
+                users.Add(new GetUserModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    AddressLine = user.Adress.AddressLine,
+                    ZipCode = user.Adress.ZipCode,
+                    City = user.Adress.City
+                });
+
+            return users;
+           
+
         }
+
+
+
+
+
+
+
 
         // GET: api/User/5
         [HttpGet("{id}")]
@@ -84,32 +111,44 @@ namespace E_Commerce_Api.Controllers
         public async Task<ActionResult<UserModel>> PostUserModel(CreateUserModel model)
         {
             var _user = await _context.Users.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
+            
+            string PasseordError;
+
+            var PasswordValidate = ValidatePassword(model.password,out PasseordError);
            
             if (_user == null )
             {
                 if(IsValidEmail(model.Email))
                 {
-                    var user = new UserModel
+                    if (PasswordValidate)
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
-                        PasswordHash = new PasswordHashModel
+                        var user = new UserModel
                         {
-                            Password = model.password
-                        },
-                        Adress = new AddressModel
-                        {
-                            AddressLine = model.AddressLine,
-                            ZipCode = model.ZipCode,
-                            City = model.City
-                        }
-                    };
+                            FirstName = model.FirstName,
+                            LastName = model.LastName,
+                            Email = model.Email,
+                            PasswordHash = new PasswordHashModel
+                            {
+                                Password = model.password
+                            },
+                            
+                            Adress = new AddressModel
+                            {
+                                AddressLine = model.AddressLine,
+                                ZipCode = model.ZipCode,
+                                City = model.City
+                            }
+                         
+                        };
 
-                    _context.Users.Add(user);
-                    await _context.SaveChangesAsync();
+                        _context.Users.Add(user);
+                        await _context.SaveChangesAsync();
 
-                    return CreatedAtAction("GetUserModel", new { id = user.Id }, user);
+                        return CreatedAtAction("GetUserModel", new { id = user.Id }, user);
+                    }
+
+
+                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new { message = PasseordError }));
                 }
                 return new BadRequestObjectResult(JsonConvert.SerializeObject(new { message = "Please enter a valid Email" }));
             }
@@ -147,6 +186,9 @@ namespace E_Commerce_Api.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
+
+
+        //Validate Email
         bool IsValidEmail(string email)
         {
             if (email.Trim().EndsWith("."))
@@ -161,6 +203,57 @@ namespace E_Commerce_Api.Controllers
             catch
             {
                 return false;
+            }
+
+        }
+
+        //Validate Password
+
+        private bool ValidatePassword(string password, out string ErrorMessage)
+        {
+            var input = password;
+            ErrorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                throw new Exception("Password should not be empty");
+            }
+
+            var hasNumber = new Regex(@"[0-9]+");
+            var hasUpperChar = new Regex(@"[A-Z]+");
+            var hasMiniMaxChars = new Regex(@".{8,15}");
+            var hasLowerChar = new Regex(@"[a-z]+");
+            var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+
+            if (!hasLowerChar.IsMatch(input))
+            {
+                ErrorMessage = "Password should contain At least one lower case letter";
+                return false;
+            }
+            else if (!hasUpperChar.IsMatch(input))
+            {
+                ErrorMessage = "Password should contain At least one upper case letter";
+                return false;
+            }
+            else if (!hasMiniMaxChars.IsMatch(input))
+            {
+                ErrorMessage = "Password should not be less than or greater than 12 characters";
+                return false;
+            }
+            else if (!hasNumber.IsMatch(input))
+            {
+                ErrorMessage = "Password should contain At least one numeric value";
+                return false;
+            }
+
+            else if (!hasSymbols.IsMatch(input))
+            {
+                ErrorMessage = "Password should contain At least one special case characters";
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }

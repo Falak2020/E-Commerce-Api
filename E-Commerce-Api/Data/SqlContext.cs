@@ -19,6 +19,11 @@ namespace E_Commerce_Api.Data
         public virtual DbSet<PasswordHashModel> PasswordHashes { get; set; }
         public virtual DbSet<AddressModel> Addresses { get; set; }
         public virtual DbSet<UserModel> Users{ get; set; }
+        public virtual DbSet<OrderModel> Orders { get; set; }
+        public virtual DbSet<DeliveryTypeModel> DeliveryTypeModels { get; set; }
+
+
+
 
 
 

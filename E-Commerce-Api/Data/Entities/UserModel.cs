@@ -27,7 +27,9 @@ namespace E_Commerce_Api.Data.Entities
         [Required]
         public int AdressId { get; set; }
 
-        public virtual AddressModel Adress { get; set; }
+
         public virtual PasswordHashModel PasswordHash { get; set; }
+        public virtual AddressModel  Adress{ get; set; }
+
     }
 }
