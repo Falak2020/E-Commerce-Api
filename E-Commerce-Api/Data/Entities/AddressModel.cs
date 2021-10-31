@@ -24,10 +24,9 @@ namespace E_Commerce_Api.Data.Entities
         [Required]
         public string City { get; set; }
 
-        [Required]
 
-      
         public virtual ICollection<UserModel> Users { get; set; }
+
 
     }
 }

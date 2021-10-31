@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce_Api.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20211028211655_init")]
+    [Migration("20211031055921_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,7 +53,7 @@ namespace E_Commerce_Api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -125,7 +125,7 @@ namespace E_Commerce_Api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -144,7 +144,7 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AdressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -161,7 +161,7 @@ namespace E_Commerce_Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdressId");
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Users");
                 });
@@ -201,13 +201,13 @@ namespace E_Commerce_Api.Migrations
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserModel", b =>
                 {
-                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Adress")
+                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Address")
                         .WithMany("Users")
-                        .HasForeignKey("AdressId")
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Adress");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.AddressModel", b =>

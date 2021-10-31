@@ -16,7 +16,7 @@ namespace E_Commerce_Api.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        [Column(TypeName ="nvarchar(50)")]
+        [Column(TypeName ="nvarchar(100)")]
         public string Name { get; set; }
 
         [Required]

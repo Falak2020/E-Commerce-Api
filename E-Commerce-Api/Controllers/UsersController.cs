@@ -8,70 +8,68 @@ using Microsoft.EntityFrameworkCore;
 using E_Commerce_Api.Data;
 using E_Commerce_Api.Data.Entities;
 using E_Commerce_Api.Models.UserModel;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace E_Commerce_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly SqlContext _context;
 
-        public UserController(SqlContext context)
+        public UsersController(SqlContext context)
         {
             _context = context;
         }
 
-
-
-
-        // GET: api/User
+        // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetUserModel>>> GetUsers()
         {
             var users = new List<GetUserModel>();
 
-            foreach (var user in await _context.Users.Include(x => x.Adress).ToListAsync())
+            foreach (var user in await _context.Users.Include(x => x.Address).ToListAsync())
                 users.Add(new GetUserModel
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    AddressLine = user.Adress.AddressLine,
-                    ZipCode = user.Adress.ZipCode,
-                    City = user.Adress.City
+                    AddressLine = user.Address.AddressLine,
+                    ZipCode = user.Address.ZipCode,
+                    City = user.Address.City
                 });
 
             return users;
-           
-
         }
 
-
-
-
-
-
-
-
-        // GET: api/User/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserModel>> GetUserModel(int id)
+        public async Task<ActionResult<GetUserModel>> GetUserModel(int id)
         {
-            var userModel = await _context.Users.FindAsync(id);
+            var _user= await _context.Users.Include(x=> x.Address).Where(x => x.Id == id).FirstOrDefaultAsync();
 
-            if (userModel == null)
+            if (_user == null)
             {
                 return NotFound();
             }
 
-            return userModel;
+            return new GetUserModel{ 
+             Id = _user.Id,
+             FirstName = _user.FirstName,
+             LastName = _user.LastName,
+             Email = _user.Email,
+             AddressLine= _user.Address.AddressLine,
+             ZipCode = _user.Address.ZipCode,
+             City = _user.Address.City
+             
+            
+            };
         }
 
-        // PUT: api/User/5
+        // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserModel(int id, UserModel userModel)
@@ -102,23 +100,20 @@ namespace E_Commerce_Api.Controllers
             return NoContent();
         }
 
-
-
-
-        // POST: api/User
+        // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<UserModel>> PostUserModel(CreateUserModel model)
         {
             var _user = await _context.Users.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-            
+
             string PasseordError;
 
-            var PasswordValidate = ValidatePassword(model.password,out PasseordError);
-           
-            if (_user == null )
+            var PasswordValidate = ValidatePassword(model.password, out PasseordError);
+
+            if (_user == null)
             {
-                if(IsValidEmail(model.Email))
+                if (IsValidEmail(model.Email))
                 {
                     if (PasswordValidate)
                     {
@@ -131,14 +126,14 @@ namespace E_Commerce_Api.Controllers
                             {
                                 Password = model.password
                             },
-                            
-                            Adress = new AddressModel
+
+                            Address = new AddressModel
                             {
                                 AddressLine = model.AddressLine,
                                 ZipCode = model.ZipCode,
                                 City = model.City
                             }
-                         
+
                         };
 
                         _context.Users.Add(user);
@@ -153,19 +148,12 @@ namespace E_Commerce_Api.Controllers
                 return new BadRequestObjectResult(JsonConvert.SerializeObject(new { message = "Please enter a valid Email" }));
             }
 
-            else 
+            else
                 return new ConflictResult();
-           
+
         }
 
-
-
-
-
-
-
-
-        // DELETE: api/User/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserModel(int id)
         {
@@ -186,14 +174,12 @@ namespace E_Commerce_Api.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
-
-
         //Validate Email
         bool IsValidEmail(string email)
         {
             if (email.Trim().EndsWith("."))
             {
-                return false; 
+                return false;
             }
             try
             {
@@ -256,5 +242,6 @@ namespace E_Commerce_Api.Controllers
                 return true;
             }
         }
-    }
+   
+}
 }

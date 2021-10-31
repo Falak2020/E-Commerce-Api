@@ -30,7 +30,7 @@ namespace E_Commerce_Api.Controllers
         {
             var products = new List<GetProductsModel>();
 
-        
+
             foreach (var product in await _context.Products.Include(x => x.SubCategory).ToListAsync())
                 products.Add(new GetProductsModel
                 {
@@ -42,20 +42,14 @@ namespace E_Commerce_Api.Controllers
                     SubCategoryName = product.SubCategory.Name
                 });
 
-            return products;
+             return products;
         }
-
-
-
-
-
 
         // GET: api/Product/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetProductsModel>> GetProductModel(int id)
         {
-            
-            var product = await _context.Products.Include(x => x.SubCategory).Where(x => x.Id == id).FirstOrDefaultAsync(); 
+            var product = await _context.Products.Include(x => x.SubCategory).Where(x => x.Id == id).FirstOrDefaultAsync();
 
 
             if (product == null)
@@ -67,7 +61,7 @@ namespace E_Commerce_Api.Controllers
             {
                 Name = product.Name,
                 Description = product.Description,
-                Price= product.Price,
+                Price = product.Price,
                 ImageURL = product.ImageURL,
                 InStock = product.InStock,
                 SubCategoryName = product.SubCategory.Name
@@ -76,14 +70,9 @@ namespace E_Commerce_Api.Controllers
 
 
 
-
-
-
-
-
-        // PUT: api/Product/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+    // PUT: api/Product/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
         public async Task<IActionResult> PutProductModel(int id, ProductModel productModel)
         {
             if (id != productModel.Id)
@@ -117,8 +106,6 @@ namespace E_Commerce_Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductModel>> PostProductModel(CreateProductModel model)
         {
-
-
             var subcategory = await _context.SubCategories.Where(x => x.Id == model.SubCategoryId).FirstOrDefaultAsync();
 
             if (subcategory != null)
@@ -142,14 +129,7 @@ namespace E_Commerce_Api.Controllers
             }
             else
                 return new BadRequestResult();
-        
         }
-
-
-
-
-
-
 
         // DELETE: api/Product/5
         [HttpDelete("{id}")]
