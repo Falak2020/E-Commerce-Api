@@ -44,5 +44,7 @@ namespace E_Commerce_Api.Data.Entities
 
         public virtual SubCategoryModel SubCategory { get; set; }
 
+        public virtual  ICollection<OrderItemModel> OrderItems { get; set; }
+
     }
 }

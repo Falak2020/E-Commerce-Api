@@ -29,6 +29,8 @@ namespace E_Commerce_Api.Data.Entities
         public virtual PasswordHashModel PasswordHash { get; set; }
 
         public virtual AddressModel Address { get; set; }
+        public virtual ICollection<OrderModel> Orders { get; set; }
+
 
     }
 }

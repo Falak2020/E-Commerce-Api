@@ -20,8 +20,18 @@ namespace E_Commerce_Api.Data.Entities
         public string Status { get; set; }
         [Required]
         public int DeliveryTypeId { get; set; }
+
         [Required]
+        public int UserId { get; set; }
+
+        [Required]
+        public int DeliveryAddressId { get; set; }
+
         public virtual DeliveryTypeModel DeliveryType { get; set; }
+        public virtual UserModel User { get; set; }
+
+        public virtual ICollection<OrderItemModel>   OrderItems { get; set; }
+
 
     }
 }

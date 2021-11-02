@@ -30,7 +30,6 @@ namespace E_Commerce_Api.Controllers
         {
             var products = new List<GetProductsModel>();
 
-
             foreach (var product in await _context.Products.Include(x => x.SubCategory).ToListAsync())
                 products.Add(new GetProductsModel
                 {
