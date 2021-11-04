@@ -10,6 +10,8 @@ using E_Commerce_Api.Data.Entities;
 using E_Commerce_Api.Models.UserModel;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using E_Commerce_Api.Models.OrderModel;
+using E_Commerce_Api.Models.OrderItemModel;
 
 namespace E_Commerce_Api.Controllers
 {
@@ -30,18 +32,56 @@ namespace E_Commerce_Api.Controllers
         {
             var users = new List<GetUserModel>();
 
-            foreach (var user in await _context.Users.Include(x => x.Address).ToListAsync())
-                users.Add(new GetUserModel
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    AddressLine = user.Address.AddressLine,
-                    ZipCode = user.Address.ZipCode,
-                    City = user.Address.City
-                });
+            var orders = new List<GetUsersOrdersModel>();
+          
 
+            foreach (var user in await _context.Users.Include(x => x.Address).ToListAsync())
+            {
+
+                foreach (var order in await _context.OrderModel.Include(x=>x.DeliveryType).Where(x => x.UserId == user.Id).ToListAsync())
+                {
+                    var OrderItemsCollection = new List<GetOrderItemModel>();
+
+                    foreach (var item in await _context.OrderItemModel.Where(item => item.OrderId == order.Id).ToListAsync())
+                    {
+                        OrderItemsCollection.Add(new GetOrderItemModel
+                        {
+                            Id = item.Id,
+                            OrderId = order.Id,
+                            ProductId = item.ProductId,
+                            UnitPrice = item.UnitPrice,
+                            Quantity = item.Quantity
+
+                        });
+                    }
+
+                    orders.Add(new GetUsersOrdersModel
+                         {
+                             Id = order.Id,
+                             OrderDate = order.OrderDate,
+                             OurReference = order.OurReference,
+                             Status = order.Status,
+                             DeliveryTypeName = order.DeliveryType.Name,
+                             OrderItems =OrderItemsCollection
+                             
+                          });
+                 }
+
+
+                 users.Add(new GetUserModel
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        AddressLine = user.Address.AddressLine,
+                        ZipCode = user.Address.ZipCode,
+                        City = user.Address.City,
+                        Orders = orders
+                    });
+              
+            }
+              
             return users;
         }
 

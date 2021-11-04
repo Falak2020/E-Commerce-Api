@@ -1,4 +1,5 @@
 ﻿using E_Commerce_Api.Data.Entities;
+using E_Commerce_Api.Models.AddressModel;
 using E_Commerce_Api.Models.OrderItemModel;
 using E_Commerce_Api.Models.UserModel;
 using System;
@@ -20,8 +21,8 @@ namespace E_Commerce_Api.Models.OrderModel
        
         public string DeliveryTypeName { get; set; }
 
-        public virtual GetUserModel User { get; set; }
-        public virtual AddressModel Address { get; set; }
+        public virtual GetOrdersUserModel User { get; set; }
+        public virtual GetAddressModel Address { get; set; }
 
         public virtual ICollection<GetOrderItemModel> OrderItems { get; set; }
     }

@@ -1,13 +1,11 @@
-﻿
-using E_Commerce_Api.Models.OrderModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace E_Commerce_Api.Models.UserModel
+namespace E_Commerce_Api.Models.OrderModel
 {
-    public class GetUserModel
+    public class GetOrdersUserModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -16,8 +14,6 @@ namespace E_Commerce_Api.Models.UserModel
         public string AddressLine { get; set; }
         public string ZipCode { get; set; }
         public string City { get; set; }
-
-        public virtual ICollection<GetUsersOrdersModel> Orders { get; set; }
 
     }
 }

@@ -24,6 +24,7 @@ namespace E_Commerce_Api.Data.Entities
         [Column(TypeName = "varchar(100)")]
         public string Email { get; set; }
 
+        [Required]
         public int AddressId { get; set; }
      
         [Required]

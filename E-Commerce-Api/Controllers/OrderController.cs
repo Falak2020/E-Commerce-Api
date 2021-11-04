@@ -10,6 +10,7 @@ using E_Commerce_Api.Data.Entities;
 using E_Commerce_Api.Models.OrderModel;
 using E_Commerce_Api.Models.UserModel;
 using E_Commerce_Api.Models.OrderItemModel;
+using E_Commerce_Api.Models.AddressModel;
 
 namespace E_Commerce_Api.Controllers
 {
@@ -32,10 +33,11 @@ namespace E_Commerce_Api.Controllers
         {
 
             var orders = new List<GetOrderModel>();
-            var OrderItemsCollection = new List<GetOrderItemModel>();
+           
 
             foreach (var order in await _context.OrderModel.Include(x => x.User).Include(x => x.Adress).Include(x => x.DeliveryType).ToListAsync())
             {
+                var OrderItemsCollection = new List<GetOrderItemModel>();
                 foreach (var item in await _context.OrderItemModel.Where(item => item.OrderId == order.Id).ToListAsync())
                 { 
                   OrderItemsCollection.Add(new GetOrderItemModel
@@ -45,7 +47,8 @@ namespace E_Commerce_Api.Controllers
                     ProductId = item.ProductId,
                     UnitPrice = item.UnitPrice,
                     Quantity = item.Quantity   
-                });
+
+                   });
 
                 }
 
@@ -57,14 +60,14 @@ namespace E_Commerce_Api.Controllers
                     OurReference = order.OurReference,
                     Status = order.Status,
                     DeliveryTypeName = order.DeliveryType.Name,
-                    Address = new AddressModel
+                    Address = new GetAddressModel
                     {
                         Id = order.Adress.Id,
                         AddressLine = order.Adress.AddressLine,
                         City = order.Adress.City,
                         ZipCode = order.Adress.ZipCode
                     },
-                    User = new GetUserModel
+                    User = new GetOrdersUserModel
                     {
                         Id = order.User.Id,
                         FirstName = order.User.FirstName,
@@ -132,14 +135,15 @@ namespace E_Commerce_Api.Controllers
                 OurReference = _order.OurReference,
                 Status = _order.Status,
                 DeliveryTypeName = _order.DeliveryType.Name,
-                Address = new AddressModel
+                UserId = _order.UserId,
+                Address = new GetAddressModel
                 {
                     Id = _order.Adress.Id,
                     AddressLine = _order.Adress.AddressLine,
                     City = _order.Adress.City,
                     ZipCode = _order.Adress.ZipCode
                 },
-                User = new GetUserModel
+                User = new GetOrdersUserModel
                 {
                     Id = _order.User.Id,
                     FirstName = _order.User.FirstName,

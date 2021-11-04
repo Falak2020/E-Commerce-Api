@@ -23,11 +23,9 @@ namespace E_Commerce_Api.Data.Entities
         [Column(TypeName = "nvarchar(20)")]
         [Required]
         public string City { get; set; }
-
-
         public virtual ICollection<UserModel> Users { get; set; }
         public virtual ICollection<OrderModel> Orders { get; set; }
-        
+
 
     }
 }

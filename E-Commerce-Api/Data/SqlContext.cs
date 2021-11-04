@@ -24,7 +24,8 @@ namespace E_Commerce_Api.Data
         public DbSet<OrderModel> OrderModel { get; set; }
         public DbSet<DeliveryTypeModel> DeliveryTypeModel { get; set; }
         public DbSet<OrderItemModel> OrderItemModel { get; set; }
-    
+       
+
 
     }
 }
