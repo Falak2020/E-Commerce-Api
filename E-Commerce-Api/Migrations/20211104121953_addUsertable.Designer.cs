@@ -4,14 +4,16 @@ using E_Commerce_Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce_Api.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20211104121953_addUsertable")]
+    partial class addUsertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,6 +115,9 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AddressModelId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AdressId")
                         .HasColumnType("int");
 
@@ -133,6 +138,8 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressModelId");
 
                     b.HasIndex("AdressId");
 
@@ -217,7 +224,7 @@ namespace E_Commerce_Api.Migrations
                     b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserModel", b =>
+            modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserAddressModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,6 +233,25 @@ namespace E_Commerce_Api.Migrations
 
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAddresses");
+                });
+
+            modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -240,8 +266,6 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.ToTable("Users");
                 });
@@ -267,8 +291,12 @@ namespace E_Commerce_Api.Migrations
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.OrderModel", b =>
                 {
-                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Adress")
+                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", null)
                         .WithMany("Orders")
+                        .HasForeignKey("AddressModelId");
+
+                    b.HasOne("E_Commerce_Api.Data.Entities.UserAddressModel", "Adress")
+                        .WithMany()
                         .HasForeignKey("AdressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -325,22 +353,30 @@ namespace E_Commerce_Api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserModel", b =>
+            modelBuilder.Entity("E_Commerce_Api.Data.Entities.UserAddressModel", b =>
                 {
                     b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Address")
-                        .WithMany("Users")
+                        .WithMany("UserAddresses")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("E_Commerce_Api.Data.Entities.UserModel", "User")
+                        .WithMany("UserAddresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.AddressModel", b =>
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("Users");
+                    b.Navigation("UserAddresses");
                 });
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.CategoryModel", b =>
@@ -374,6 +410,8 @@ namespace E_Commerce_Api.Migrations
 
                     b.Navigation("PasswordHash")
                         .IsRequired();
+
+                    b.Navigation("UserAddresses");
                 });
 #pragma warning restore 612, 618
         }

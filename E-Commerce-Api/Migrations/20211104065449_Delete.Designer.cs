@@ -4,14 +4,16 @@ using E_Commerce_Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce_Api.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20211104065449_Delete")]
+    partial class Delete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,7 +115,7 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AdressId")
+                    b.Property<int>("DeliveryAddressId")
                         .HasColumnType("int");
 
                     b.Property<int>("DeliveryTypeId")
@@ -133,8 +135,6 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdressId");
 
                     b.HasIndex("DeliveryTypeId");
 
@@ -267,12 +267,6 @@ namespace E_Commerce_Api.Migrations
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.OrderModel", b =>
                 {
-                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Adress")
-                        .WithMany("Orders")
-                        .HasForeignKey("AdressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("E_Commerce_Api.Data.Entities.DeliveryTypeModel", "DeliveryType")
                         .WithMany("Orders")
                         .HasForeignKey("DeliveryTypeId")
@@ -284,8 +278,6 @@ namespace E_Commerce_Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Adress");
 
                     b.Navigation("DeliveryType");
 
@@ -338,8 +330,6 @@ namespace E_Commerce_Api.Migrations
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.AddressModel", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("Users");
                 });
 
@@ -372,8 +362,7 @@ namespace E_Commerce_Api.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("PasswordHash")
-                        .IsRequired();
+                    b.Navigation("PasswordHash");
                 });
 #pragma warning restore 612, 618
         }

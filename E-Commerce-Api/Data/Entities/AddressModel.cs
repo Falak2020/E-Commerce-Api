@@ -26,7 +26,8 @@ namespace E_Commerce_Api.Data.Entities
 
 
         public virtual ICollection<UserModel> Users { get; set; }
-
+        public virtual ICollection<OrderModel> Orders { get; set; }
+        
 
     }
 }

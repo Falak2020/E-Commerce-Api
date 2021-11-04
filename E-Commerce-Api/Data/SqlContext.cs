@@ -21,16 +21,10 @@ namespace E_Commerce_Api.Data
 
         public virtual DbSet<AddressModel> Addresses { get; set; }
         public virtual DbSet<UserModel> Users{ get; set; }
-        public DbSet<E_Commerce_Api.Data.Entities.OrderModel> OrderModel { get; set; }
-        public DbSet<E_Commerce_Api.Data.Entities.DeliveryTypeModel> DeliveryTypeModel { get; set; }
-       
-
-
-
-
-
-
-
+        public DbSet<OrderModel> OrderModel { get; set; }
+        public DbSet<DeliveryTypeModel> DeliveryTypeModel { get; set; }
+        public DbSet<OrderItemModel> OrderItemModel { get; set; }
+    
 
     }
 }

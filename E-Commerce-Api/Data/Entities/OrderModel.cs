@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -25,11 +26,11 @@ namespace E_Commerce_Api.Data.Entities
         public int UserId { get; set; }
 
         [Required]
-        public int DeliveryAddressId { get; set; }
-
+        [DisplayName("DeliveryAddressId")]
+        public int AdressId { get; set; }
         public virtual DeliveryTypeModel DeliveryType { get; set; }
         public virtual UserModel User { get; set; }
-
+        public virtual AddressModel Adress { get; set; }
         public virtual ICollection<OrderItemModel>   OrderItems { get; set; }
 
 

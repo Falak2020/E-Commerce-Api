@@ -9,7 +9,8 @@ namespace E_Commerce_Api.Models.OrderModel
     {
         public DateTime OrderDate { get; set; }
         public string OurReference { get; set; }
-        public string Status { get; set; }    
+        public string Status { get; set; }
+        public int DeliveryAddressId { get; set; }
         public int DeliveryTypeId { get; set; }
         public int UserId { get; set; }
      

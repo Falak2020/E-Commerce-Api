@@ -4,14 +4,16 @@ using E_Commerce_Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce_Api.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20211104070152_AddAdrress")]
+    partial class AddAdrress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,6 +115,9 @@ namespace E_Commerce_Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AdressId")
                         .HasColumnType("int");
 
@@ -134,7 +139,7 @@ namespace E_Commerce_Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdressId");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("DeliveryTypeId");
 
@@ -267,11 +272,9 @@ namespace E_Commerce_Api.Migrations
 
             modelBuilder.Entity("E_Commerce_Api.Data.Entities.OrderModel", b =>
                 {
-                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Adress")
+                    b.HasOne("E_Commerce_Api.Data.Entities.AddressModel", "Address")
                         .WithMany("Orders")
-                        .HasForeignKey("AdressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("E_Commerce_Api.Data.Entities.DeliveryTypeModel", "DeliveryType")
                         .WithMany("Orders")
@@ -285,7 +288,7 @@ namespace E_Commerce_Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Adress");
+                    b.Navigation("Address");
 
                     b.Navigation("DeliveryType");
 
@@ -372,8 +375,7 @@ namespace E_Commerce_Api.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("PasswordHash")
-                        .IsRequired();
+                    b.Navigation("PasswordHash");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,14 +23,14 @@ namespace E_Commerce_Api.Data.Entities
         [Required]
         [Column(TypeName = "varchar(100)")]
         public string Email { get; set; }
+
+        public int AddressId { get; set; }
      
         [Required]
-        public int AddressId { get; set; }
         public virtual PasswordHashModel PasswordHash { get; set; }
 
         public virtual AddressModel Address { get; set; }
         public virtual ICollection<OrderModel> Orders { get; set; }
-
 
     }
 }
